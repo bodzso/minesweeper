@@ -107,7 +107,7 @@ int choice(){
     SDL_WM_SetCaption("Minesweeper", "Minesweeper");
 
     //bg
-    boxColor(screen, 0, 0, 9*FSIZ, 11*FSIZ, 0xffffffff);
+    boxColor(screen, 0, 0, 9*FSIZ, 11*FSIZ, 0xc0c0c0ff);
 
     //beginner
     boxColor(screen, 10, 10, 9*FSIZ-10, 40, 0xffffffff);
