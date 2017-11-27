@@ -1,6 +1,3 @@
-#ifndef MAIN_H_INCLUDED
-#define MAIN_H_INCLUDED
-
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -12,7 +9,7 @@ typedef struct{
     int coln;
     int minen;
     int limit;
-    bool loose;
+    bool lose;
     bool win;
     bool hard;
     bool generated;
@@ -25,10 +22,11 @@ typedef struct{
 }board;
 
 void init();
-void init_graphics();
+void main_graphics();
 void start();
-int choice();
+char choice();
+char custom();
 void load();
 extern board b;
-
-#endif // MAIN_H_INCLUDED
+extern SDL_Surface *tileset;
+extern SDL_Surface *screen;

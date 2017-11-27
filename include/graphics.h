@@ -1,11 +1,13 @@
-#ifndef GRAPHICS_H_INCLUDED
-#define GRAPHICS_H_INCLUDED
-
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include <SDL.h>
 #include <SDL_gfxPrimitives.h>
 #include <SDL_image.h>
+
+//SDL
+SDL_Surface *screen;
+SDL_Surface *tileset;
 
 //tileset clipping
 SDL_Rect clip[] = {
@@ -48,7 +50,7 @@ typedef struct{
     int coln;
     int minen;
     int limit;
-    bool loose;
+    bool lose;
     bool win;
     bool hard;
     bool generated;
@@ -62,11 +64,5 @@ typedef struct{
 
 extern board b;
 
-//SDL
-SDL_Surface *screen;
-SDL_Surface *tileset;
-
 #define FSIZ 16 //field size
 #define BSIZ 10 //border size
-
-#endif // GRAPHICS_H_INCLUDED
