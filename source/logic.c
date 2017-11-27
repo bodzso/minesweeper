@@ -4,7 +4,7 @@
 void init(){
     printf("Init!\n");
     b.mine = b.minen;
-    b.counter = b.limit;
+    b.counter = (b.counter) ? b.counter : b.limit;
     b.arr = (int **)malloc(b.rown * sizeof(int*));
     if(b.arr != NULL){
         b.arr[0] = (int *)malloc(b.rown*b.coln * sizeof(int));
@@ -20,8 +20,8 @@ void init(){
             }
         }
         else{
-            printf("Failed to create field!\n");
-            perror("Cannot create field!\n");
+            printf("Failed to create fields!\n");
+            perror("Cannot create fields!\n");
             exit(1);
         }
     }
@@ -123,17 +123,16 @@ void gen_board(int r, int c){
             n++;
         }
     }
-    save();
     b.generated = true;
+    save();
 }
 
 //reset game
 void reset(){
-    printf("Reset!\n");
+    printf("Resetting!\n");
     b.mine = b.minen;
-    b.loose = false;
+    b.lose = false;
     b.win = false;
-    b.hard = (b.hard) ? true : false;
     b.generated = false;
     b.loaded = false;
     b.mflagged = 0;
@@ -150,12 +149,11 @@ void reset(){
 
 //field flag
 void flag(int row, int col, bool q){
-    //set field to normal from question mark
+    //set field from question mark to normal
     if(q && b.arr[row][col] >= 30){
         b.arr[row][col] -= 20;
         return;
     }
-
     //set field to flagged or question mark
     if(b.arr[row][col] >= 10 && b.arr[row][col] < 20){
         //question mark
@@ -165,22 +163,18 @@ void flag(int row, int col, bool q){
         }
         //flagged
         b.arr[row][col] += 10;
-        if(b.mine > 0){
+        if(b.mine > 0)
             b.mine--;
-        }
-        if(b.arr[row][col] % 10 == 9){
+        if(b.arr[row][col] % 10 == 9)
             b.mflagged++;
-        }
     }
     //set field to normal
     else if(b.arr[row][col] >= 20 && b.arr[row][col] < 30){
         b.arr[row][col] -= 10;
-        if(b.mine < b.minen){
+        if(b.mine < b.minen)
             b.mine++;
-        }
-        if((b.arr[row][col] % 10) == 9){
+        if((b.arr[row][col] % 10) == 9)
             b.mflagged--;
-        }
     }
 }
 
@@ -190,9 +184,8 @@ void reveal(int row, int col){
     if(col < 0 || col >= b.coln) return;
     if(b.arr[row][col] < 10)  return;
     if(b.arr[row][col] >= 20) return;
-
+    //lose condition
     if(b.arr[row][col] % 10 == 9){
-
         b.arr[row][col] = 40;
         printf("Boom!\n");
         int r, c;
@@ -204,11 +197,12 @@ void reveal(int row, int col){
             }
         }
         b.smiley = 2;
-        b.loose = true;
+        b.lose = true;
     }
     else{
         b.revealed++;
         b.arr[row][col] %= 10;
+        //win condition
         if(b.revealed == (b.rown * b.coln) - b.minen){
             b.win = true;
             return;
@@ -230,28 +224,26 @@ void start(){
     SDL_TimerID id;
     SDL_Event ev;
     bool quit = false;
-    int col, row;
+    unsigned int col, row;
 
     while(!quit){
         SDL_WaitEvent(&ev);
         switch (ev.type){
             case SDL_KEYDOWN:
-                if(ev.key.keysym.sym == SDLK_F1){
+                if(ev.key.keysym.sym == SDLK_F1)
                     save();
-                }
                 if(ev.key.keysym.sym == SDLK_F2){
-                    SDL_RemoveTimer(id);
+                    if(id) SDL_RemoveTimer(id);
                     load();
-                    paint();
                 }
                 if(ev.key.keysym.sym == SDLK_F3){
-                    printf("\nmine:%d\nmflagged:%d\ncounter:%d\nloose:%d\nwin:%d\ngenerated:%d\nsmiley:%d\nloaded:%d\nrevealed:%d\n",b.mine,b.mflagged,b.counter,b.loose,b.win,b.generated,b.smiley, b.loaded, b.revealed);
+                    printf("\nmine:%d\nmflagged:%d\ncounter:%d\nlose:%d\nwin:%d\ngenerated:%d\nsmiley:%d\nloaded:%d\nrevealed:%d\nlimit%d\n",b.mine,b.mflagged,b.counter,b.lose,b.win,b.generated,b.smiley, b.loaded, b.revealed, b.limit);
                 }
                 break;
             case SDL_MOUSEBUTTONDOWN:
                 row = floor((double)(ev.button.y-56) / FSIZ);
                 col = floor((double)(ev.button.x-BSIZ) / FSIZ);
-                if(ev.button.y > 56 && ev.button.y < b.rown * FSIZ + 56 && (!b.loose && !b.win) && ev.button.x > BSIZ && ev.button.x < b.coln*FSIZ+10){
+                if(ev.button.y > 56 && ev.button.y < 56 + b.rown * FSIZ && (!b.lose && !b.win) && ev.button.x > BSIZ && ev.button.x < b.coln*FSIZ+BSIZ){
                     if(ev.button.button == SDL_BUTTON_MIDDLE)
                         flag(row, col, 1);
                     if(ev.button.button == SDL_BUTTON_LEFT){
@@ -259,33 +251,31 @@ void start(){
                             gen_board(row, col);
                             id = SDL_AddTimer(1000, draw_time, NULL);
                         }
-                        if(b.arr[row][col] >= 10 && b.arr[row][col] < 20)
-                            b.smiley = 1;
                         if (b.loaded){
-                            if(id){
-                                SDL_RemoveTimer(id);
-                            }
+                            if(id) SDL_RemoveTimer(id);
                             b.loaded = false;
                             id = SDL_AddTimer(1000, draw_time, NULL);
                         }
+                        if(b.arr[row][col] >= 10 && b.arr[row][col] < 20)
+                            b.smiley = 1;
                     }
                 }
-                if(ev.button.y >= BSIZ+5 && ev.button.y <= 41 && ev.button.x >= ((b.coln*FSIZ+20) / 2)-13 && ev.button.x <= ((b.coln*FSIZ+20) / 2)+13){
+                if(ev.button.y >= BSIZ+5 && ev.button.y <= 41 && ev.button.x >= ((b.coln*FSIZ+2*BSIZ) / 2)-13 && ev.button.x <= ((b.coln*FSIZ+2*BSIZ) / 2)+13){
                     b.smiley = -1;
                 }
-                paint();
+                draw();
                 break;
             case SDL_MOUSEBUTTONUP:
-                b.smiley = 0;
                 row = floor((double)(ev.button.y-56) / FSIZ);
                 col = floor((double)(ev.button.x-10) / FSIZ);
                 if(ev.button.button == SDL_BUTTON_LEFT){
-                    if(ev.button.y >= BSIZ+5 && ev.button.y <= 41 && ev.button.x >= ((b.coln*FSIZ+20) / 2)-13 && ev.button.x <= ((b.coln*FSIZ+20) / 2)+13){
-                        SDL_RemoveTimer(id);
+                    if(ev.button.y >= BSIZ+5 && ev.button.y <= 41 && ev.button.x >= ((b.coln*FSIZ+2*BSIZ) / 2)-13 && ev.button.x <= ((b.coln*FSIZ+2*BSIZ) / 2)+13){
+                        if(id) SDL_RemoveTimer(id);
                         reset();
                     }
                 }
-                if(ev.button.y < b.rown * FSIZ + 56 && (!b.loose && !b.win) && b.generated && ev.button.y > 56){
+                if(ev.button.y > 56 && ev.button.y < 56 + b.rown * FSIZ && (!b.lose && !b.win) && b.generated && ev.button.x > BSIZ && ev.button.x < b.coln*FSIZ+BSIZ){
+                    b.smiley = 0;
                     if(ev.button.button == SDL_BUTTON_LEFT){
                         reveal(row, col);
                     }
@@ -294,27 +284,25 @@ void start(){
                         flag(row, col, 0);
                     }
                 }
-                paint();
+                draw();
                 break;
             case SDL_QUIT:
                 quit = true;
                 break;
         }
+        if(b.lose || b.win)
+            SDL_RemoveTimer(id);
+        //win condition
         if(b.mflagged == b.minen || b.win){
             b.smiley = 3;
             b.win = true;
-            paint();
+            draw();
         }
-        if(b.loose || b.win)
-            SDL_RemoveTimer(id);
     }
 
-    //game loop end
+    //outside the game loop
     reset();
-    SDL_FreeSurface(tileset);
-    SDL_FreeSurface(screen);
-    SDL_RemoveTimer(id);
-    SDL_Quit();
+    if(id) SDL_RemoveTimer(id);
     free(b.arr);
     free(b.arr[0]);
 }
