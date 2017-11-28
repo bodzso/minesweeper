@@ -24,8 +24,8 @@ typedef struct{
 void init();
 void main_graphics();
 void start();
-char choice();
-char custom();
+int choice();
+int custom();
 void load();
 extern board b;
 extern SDL_Surface *tileset;

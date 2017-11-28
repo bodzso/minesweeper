@@ -1,6 +1,18 @@
 #include "../include/main.h"
 
 int main(int argc, char *argv[]){
+    if(argc == 5){
+        b.rown = atoi(argv[1]); b.coln = atoi(argv[2]); b.minen = atoi(argv[3]); b.limit = atoi(argv[4]);
+        //SDL_Init
+        SDL_Init(SDL_INIT_EVERYTHING);
+        #ifdef __WIN32__
+        freopen("CON", "w", stdout);
+        freopen("CON", "w", stderr);
+        #endif
+        init();
+        main_graphics();
+        start();
+    }
     char c;
     do{
         switch(c = choice()){

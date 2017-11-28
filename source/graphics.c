@@ -38,8 +38,7 @@ void draw(){
         //10
         offset.x -= 13;
         SDL_BlitSurface( tileset, &clip[15+(num % 10)], screen, &offset);
-        if(num > 0)
-            num /= 10;
+        num /= 10;
 
         //100
         offset.x -= 13;
@@ -84,7 +83,7 @@ void draw(){
     SDL_Flip(screen);
 }
 
-char choice(){
+int choice(){
     SDL_Event ev;
     char c = 0;
 
@@ -146,9 +145,9 @@ char choice(){
     return c;
 }
 
-char custom(){
+int custom(){
     SDL_Event ev;
-    unsigned char c = 0;
+    char c = 0;
     unsigned short rown = b.rown, coln = b.coln, minen = b.minen, limit = b.limit;
     char tmp[4];
 
@@ -168,23 +167,28 @@ char custom(){
     //ok
     boxColor(screen, ((9 * FSIZ) / 2) - 20, 170, ((9 * FSIZ) / 2) + 20 , 190, 0xffffffff);
 
-    sprintf(tmp, "%d", rown);
-    stringColor(screen, 10, 20, tmp, 0x000000ff);
-    sprintf(tmp, "%d", coln);
-    stringColor(screen, 10, 60, tmp, 0x000000ff);
-    sprintf(tmp, "%d", minen);
-    stringColor(screen, 10, 100, tmp, 0x000000ff);
-    sprintf(tmp, "%d", limit);
-    stringColor(screen, 10, 140, tmp, 0x000000ff);
-
-    stringColor(screen, 9*FSIZ-10-23, 20, "row", 0x000000ff);
-    stringColor(screen, 9*FSIZ-10-23, 60, "col", 0x000000ff);
-    stringColor(screen, 9*FSIZ-10-40, 100, "minen", 0x000000ff);
-    stringColor(screen, 9*FSIZ-10-40, 140, "limit", 0x000000ff);
-    stringColor(screen, ((9 * FSIZ) / 2)-6, 175, "ok", 0x000000ff);
-    SDL_Flip(screen);
-
     while(true){
+        boxColor(screen, 10, 10, 9*FSIZ-10, 40, (c == 0) ? 0xff0000ff : 0xffffffff);
+        boxColor(screen, 10, 50, 9*FSIZ-10, 80, (c == 1) ? 0xff0000ff : 0xffffffff);
+        boxColor(screen, 10, 90, 9*FSIZ-10, 120, (c == 2) ? 0xff0000ff : 0xffffffff);
+        boxColor(screen, 10, 130, 9*FSIZ-10, 160, (c == 3) ? 0xff0000ff : 0xffffffff);
+
+        sprintf(tmp, "%d", rown);
+        stringColor(screen, 10, 20, tmp, 0x000000ff);
+        sprintf(tmp, "%d", coln);
+        stringColor(screen, 10, 60, tmp, 0x000000ff);
+        sprintf(tmp, "%d", minen);
+        stringColor(screen, 10, 100, tmp, 0x000000ff);
+        sprintf(tmp, "%d", limit);
+        stringColor(screen, 10, 140, tmp, 0x000000ff);
+
+        stringColor(screen, 9*FSIZ-10-23, 20, "row", 0x000000ff);
+        stringColor(screen, 9*FSIZ-10-23, 60, "col", 0x000000ff);
+        stringColor(screen, 9*FSIZ-10-40, 100, "minen", 0x000000ff);
+        stringColor(screen, 9*FSIZ-10-40, 140, "limit", 0x000000ff);
+        stringColor(screen, ((9 * FSIZ) / 2)-6, 175, "ok", 0x000000ff);
+        SDL_Flip(screen);
+
         SDL_WaitEvent(&ev);
         switch (ev.type){
             case SDL_MOUSEBUTTONDOWN:
@@ -282,29 +286,11 @@ char custom(){
                 return 1;
                 break;
         }
-        boxColor(screen, 10, 10, 9*FSIZ-10, 40, (c == 0) ? 0xff0000ff : 0xffffffff);
-        boxColor(screen, 10, 50, 9*FSIZ-10, 80, (c == 1) ? 0xff0000ff : 0xffffffff);
-        boxColor(screen, 10, 90, 9*FSIZ-10, 120, (c == 2) ? 0xff0000ff : 0xffffffff);
-        boxColor(screen, 10, 130, 9*FSIZ-10, 160, (c == 3) ? 0xff0000ff : 0xffffffff);
-
-        sprintf(tmp, "%d", rown);
-        stringColor(screen, 10, 20, tmp, 0x000000ff);
-        sprintf(tmp, "%d", coln);
-        stringColor(screen, 10, 60, tmp, 0x000000ff);
-        sprintf(tmp, "%d", minen);
-        stringColor(screen, 10, 100, tmp, 0x000000ff);
-        sprintf(tmp, "%d", limit);
-        stringColor(screen, 10, 140, tmp, 0x000000ff);
-
-        stringColor(screen, 9*FSIZ-10-23, 20, "row", 0x000000ff);
-        stringColor(screen, 9*FSIZ-10-23, 60, "col", 0x000000ff);
-        stringColor(screen, 9*FSIZ-10-40, 100, "minen", 0x000000ff);
-        stringColor(screen, 9*FSIZ-10-40, 140, "limit", 0x000000ff);
-        SDL_Flip(screen);
     }
 }
 
 Uint32 draw_time(Uint32 ms, void *param){
+    SDL_Event ev;
     SDL_Rect offset = {0, 0, 0, 0};
     //time numbers
     offset.y = 17;
@@ -316,6 +302,12 @@ Uint32 draw_time(Uint32 ms, void *param){
 
     //lose condition
     if(b.limit && !b.counter){
+        b.lose = true;
+        b.smiley = 2;
+        draw();
+    }else if(b.counter == 999){
+        ev.type = SDL_USEREVENT;
+        SDL_PushEvent(&ev);
         b.lose = true;
         b.smiley = 2;
         draw();
