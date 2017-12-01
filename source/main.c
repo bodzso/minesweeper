@@ -18,6 +18,7 @@ int main(int argc, char *argv[]){
         switch(c = choice()){
             //beginner
             case 1:
+                b.hard = false;
                 b.rown = 9; b.coln =  9; b.minen = 10; b.limit = 0;
                 init();
                 main_graphics();
