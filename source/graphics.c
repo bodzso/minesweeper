@@ -136,10 +136,7 @@ int choice(){
                 }
                 break;
             case SDL_QUIT:
-                SDL_FreeSurface(screen);
-                SDL_Quit();
                 return -1;
-                break;
         }
     }
     return c;
@@ -301,11 +298,7 @@ Uint32 draw_time(Uint32 ms, void *param){
         b.counter += ms / 1000;
 
     //lose condition
-    if(b.limit && !b.counter){
-        b.lose = true;
-        b.smiley = 2;
-        draw();
-    }else if(b.counter == 999){
+    if((b.limit && !b.counter) || b.counter == 999){
         ev.type = SDL_USEREVENT;
         SDL_PushEvent(&ev);
         b.lose = true;

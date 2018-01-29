@@ -91,6 +91,7 @@ void load(){
     b.generated = true;
     b.loaded = true;
     fclose(fp);
+    draw();
 }
 
 //add 1 to field
