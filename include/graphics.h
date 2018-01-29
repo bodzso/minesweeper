@@ -5,6 +5,9 @@
 #include <SDL_gfxPrimitives.h>
 #include <SDL_image.h>
 
+#define FSIZ 16 //field size
+#define BSIZ 10 //border size
+
 //SDL
 SDL_Surface *screen;
 SDL_Surface *tileset;
@@ -63,6 +66,3 @@ typedef struct{
 }board;
 
 extern board b;
-
-#define FSIZ 16 //field size
-#define BSIZ 10 //border size
