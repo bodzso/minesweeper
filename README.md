@@ -7,7 +7,7 @@ Minesweeper written in C using SDL
 
 # usage
 
-`minesweeper <Row number> <Column number> <Mine count> <Time limit>`
+`minesweeper [Row number] [Column number] [Mine count] [Time limit]`
 
 Save with **F1**
 Load with in menu or in game with **F2**
