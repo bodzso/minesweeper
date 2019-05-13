@@ -1,18 +1,47 @@
-# minesweeper
-Minesweeper written in C using SDL
+# Minesweeper
+Minesweeper written in C using SDL 1.2
 
 - [x] Save, load function
 - [x] Customizable
 - [x] Time limit
 
-# usage
+## Prerequisites
+
+- [SDL 1.2](https://www.libsdl.org/download-1.2.php)
+- [SDL_image 1.2](https://www.libsdl.org/projects/SDL_image/release-1.2.html)
+- [SDL_gfx](http://www.ferzkopp.net/wordpress/2016/01/02/sdl_gfx-sdl2_gfx/)
+- [cmake](https://cmake.org/)
+
+## Building from source
+
+Windows
+
+Visual Studio 2017 is needed
+
+```powershell
+mkdir build && cd build
+cmake ..
+minesweeper.sln
+```
+
+Linux/Unix
+
+```bash
+sudo apt-get install build-essential libsdl1.2-dev libsdl-gfx1.2-dev libsdl-image1.2-dev
+mkdir build && cd build
+cmake ..
+```
+
+The output directory is /bin
+
+## Usage
 
 `minesweeper [Row number] [Column number] [Mine count] [Time limit]`
 
 Save with **F1**
 Load with in menu or in game with **F2**
 
-# preview
+## Preview
 
-![1](https://user-images.githubusercontent.com/33965876/42164167-77c318a8-7e05-11e8-9418-1fe146ec3b94.png)
-![2](https://user-images.githubusercontent.com/33965876/42164168-77f251c2-7e05-11e8-8dd7-e678f7ac5eae.png)
+![1](images/1.png)
+![2](images/2.png)
