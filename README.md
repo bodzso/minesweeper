@@ -1,5 +1,7 @@
 # Minesweeper
-Minesweeper written in C using SDL 1.2
+Minesweeper written in C using SDL 1.2.
+
+In 2017 I've written this as a homework assignment at the university.
 
 - [x] Save, load function
 - [x] Customizable
